@@ -1,5 +1,9 @@
+<<<<<<< HEAD:dnd.rb
 require 'yaml'
 #Array of saved game
+=======
+#Array of saved game files
+>>>>>>> d0cd8b76e65d6317d5596dafa8f64893a7bd66d5:test.rb
 $saves = Array.new
 #Selection of monsters
 $monsterManual = {:Orc => {:hp=>46, :attacks=>{:"Sword Thrust"=>5, :"Charge"=>7}, :loot=> "Battered Gauntlets"}, 
