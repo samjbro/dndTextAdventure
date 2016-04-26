@@ -1,4 +1,4 @@
-#Array of saved game files
+#Array of saved game filesss
 $saves = Array.new
 #Selection of monsters
 $monsterManual = {:Orc => {:hp=>46, :attacks=>{:"Sword Thrust"=>5, :"Charge"=>7}, :loot=> "Battered Gauntlets"}, 
