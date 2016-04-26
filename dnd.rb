@@ -1,22 +1,5 @@
-=begin
-	GOALS:
-		Player stats should be influenced by fightClass and race
-		Add an adjective form of each race for use in certain phrasing (e.g. dwarven for dwarf, elven for elf)
-		Add languages to races
-		Add multiple players to combat round
-		Determine turn order by an initiative roll
-		Randomise the monster's target, and subtract HP from the appropriate party member
-		If a party member's health is brought below 1, they are KO'd; if all party members are KO'd, it is GAME OVER
-		Consider giving all classes access to game data by passing them the save name. for now can target last object in $saves
-	ACHIEVED:
-		userInput now camelcases multi-word commands
-		Races now have attributes - name, adjective form of name, language
-		Race and fightClass selection are now formatted and numbered
-		input now treats hyphenated words as two distinct words (e.g. "Half-Elf" is treated as "Half Elf")
-		Player status readout is now centred
-=end
-
-#Array of saved game files
+require 'yaml'
+#Array of saved game
 $saves = Array.new
 #Selection of monsters
 $monsterManual = {:Orc => {:hp=>46, :attacks=>{:"Sword Thrust"=>5, :"Charge"=>7}, :loot=> "Battered Gauntlets"}, 
@@ -69,9 +52,29 @@ class Game < Rules
     @party = []
     @saveName = saveName
   end
+  def partyImporter
+    partyImport = userInput("Would you like to import a party?\n==>").downcase
+    if %w(yes y).include?(partyImport)
+      true
+    elsif %w(no n).include?(partyImport)
+      false
+    else partyImporter
+    end
+  end
   #Begins the game
   def begin
-      (userInput("Hail adventurers! How many will be in your party?\n==>").to_i).times {|x| createPlayer(x+1); @party[x].greeting } until @party.length >0
+      if partyImporter
+        puts "What is the name of the saved party you wish to import?\nAvailable saves:"
+        Dir.entries("savedChars").reject {|f| File.directory? f}.reverse.each {|x| puts x[0...-3]} #Put "No saved games" if none
+        savedChar = "savedChars/" + userInput() + ".rb"
+        @party = YAML.load(File.read(savedChar))
+      else 
+        (userInput("Hail adventurers! How many will be in your party?\n==>").to_i).times {|x| createPlayer(x+1); @party[x].greeting } until @party.length >0
+        
+        fileName = "savedChars/" + $saves[-1].saveName + ".rb"
+        File.new(fileName, 'w+')
+        File.open(fileName, 'w') {|f| f.write(YAML.dump(@party)) }
+      end
       Environment.new(@party).town
   end
   #Is called any time the game requires user input - this allows for universal commands such as 'quit', 'save' and 'status'
@@ -246,7 +249,7 @@ class Encounter < Game
     puts "The #{@enemy.type} has #{@enemy.stats[:hp]} HP.\n".center(60)
     @party.each{|member| puts "#{member.name} has #{member.hp} HP.".center(60)}
     userInput("")
-   #COULD THIS BE USEFUL? @party.each {|member| instance_variable_set("@player#{@party.index(member)+1}", member)}
+    @party.each {|member| instance_variable_set("@player#{@party.index(member)+1}", member)} #CHANGE THIS
     
 
     until @player1.hp < 1 || @enemy.stats[:hp] < 1 # initiative roll
@@ -291,7 +294,7 @@ end
 
 
 print "What would you like to call your new saved game?\n==> "
-$saves << Game.new(gets.chomp + ".dnd")
+$saves << Game.new(gets.chomp)
 $saves[-1].begin #rather than accessing by last index, could use .find to select the object with the chosen saveName
 
 
