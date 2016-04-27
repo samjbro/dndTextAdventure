@@ -38,7 +38,10 @@ Monday 25/04/16:
 		input now treats hyphenated words as two distinct words (e.g. "Half-Elf" is treated as "Half Elf")
 		Player status readout is now centred
 
+Tuesday 26/04/16
 
+	ACHIEVED:
+		Users may now save and load parties to/from the 'savedChars' sub-directory
 
 
 =end

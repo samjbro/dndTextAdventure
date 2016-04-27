@@ -1,5 +1,9 @@
+require 'yaml'
+#Array of saved game
+
 #Array of saved game files
-$saves = Array.new
+
+$party = Array.new
 #Selection of monsters
 $monsterManual = {:Orc => {:hp=>46, :attacks=>{:"Sword Thrust"=>5, :"Charge"=>7}, :loot=> "Battered Gauntlets"}, 
                   :Goblin => {:hp=>23, :attacks=>{:Lunge=>5, :"Stab Stab Stab"=>7}, :loot=> "Soggy Hat"}, 
@@ -40,24 +44,8 @@ class Rules
     end
     damage
   end
-  
-end
-
-#Create a new Game
-class Game < Rules
-  attr_accessor :party
-  attr_reader :saveName
-  def initialize(saveName)
-    @party = []
-    @saveName = saveName
-  end
-  #Begins the game
-  def begin
-      (userInput("Hail adventurers! How many will be in your party?\n==>").to_i).times {|x| createPlayer(x+1); @party[x].greeting } until @party.length >0
-      Environment.new(@party).town
-  end
-  #Is called any time the game requires user input - this allows for universal commands such as 'quit', 'save' and 'status'
-  def userInput(text="==> ")
+    #Is called any time the game requires user input - this allows for universal commands such as 'quit', 'save' and 'status'
+  def userInput(text="==> ") #redo this so that there are cases for "y, yes" and "n, no" that return true and false
     print text
     input = gets.chomp
     unless input == ""
@@ -70,17 +58,48 @@ class Game < Rules
           quitConfirm = gets.chomp.downcase
           return userInput("You have not quit the game :)") unless (quitConfirm == "y" || quitConfirm == "yes" || quitConfirm == "quit")   
           abort("You have quit the game :(") 
-      when "status" 
+      when "status" #allow going instantly to a char's status by typing "status charName"
         puts "Whose status would you like to check?"
-        $saves[-1].party.each{|x| puts x.name}
+        $party.each{|x| puts x.name}
         choice = userInput.downcase.capitalize
-        $saves[-1].party.find {|player| player.name == choice}.status
+        $party.find {|player| player.name == choice}.status
         userInput(text)
       when "saveData"
         puts "The current save file is: #{$saves}"
         userInput
       else
         input
+    end
+  end
+end
+
+#Create a new Game
+class Game < Rules
+  def initialize
+  end
+  #Begins the game
+  def begin
+    partyImporter
+    Environment.new($party).town
+  end
+  #The player chooses whether to import a new party, or create a new one
+  def partyImporter
+    partyImport = userInput("Hail adventurer! Would you like to import a party?\n==>").downcase
+    if %w(yes y).include?(partyImport)
+      puts "What is the name of the saved party you wish to import?\nAvailable saves:"
+      Dir.entries("savedChars").reject {|f| File.directory? f}.reverse.each {|x| puts x[0...-3]} #Put "No saved games" if none
+      chosenSave = userInput
+      savedChar = "savedChars/" + chosenSave + ".rb"
+      $party = YAML.load(File.read(savedChar))
+      userInput("You have loaded saved party: #{chosenSave}")
+    elsif %w(no n).include?(partyImport)
+      saveName = userInput("What would you like to call your new party?\n==>")
+      #give party 'saveName' as a party name attribute 
+      (userInput("How many will be in your party?\n==>").to_i).times {|x| createPlayer(x+1); $party[x].greeting } until $party.length >0 #confusingly worded, change the 'until' part
+      fileName = "savedChars/" + saveName + ".rb"
+      File.new(fileName, 'w+')
+      File.open(fileName, 'w') {|f| f.write(YAML.dump($party)) }
+    else partyImporter
     end
   end
   #The player chooses their character name, race and fighting class
@@ -106,7 +125,7 @@ class Game < Rules
     fightClass = $fightClasses[userInput.downcase.to_sym]
     fightClass = $fightClasses[:beggar] if fightClass == nil
 
-    @party.push(Player.new(playerName, playerRace, fightClass, @party.length+1))
+    $party.push(Player.new(playerName, playerRace, fightClass, $party.length+1))
   end
 end
 
@@ -154,7 +173,8 @@ class Player < Game
 #Give the Player a selection of actions
   def actions(enemy)
      #maybe instead of this, look at all the defined action method names and list them?
-    userMethod = userInput("What will #{@name} do? They may: \n#{@actions.map(&:capitalize).join("\n")}\n==>").downcase #how do i center all of these, not just the first?
+
+    userMethod = userInput("What will #{@name} do? They may: \n#{@actions.each{|x| puts x.capitalize}}\n==>").downcase #how do i center all of these, not just the first?
     (@actions.include? userMethod) ? method(userMethod).call(enemy) : (puts "#{@name} attempts to #{userMethod}... Nothing happens.") 
   end
 #Describe the Player's 'attack' action
@@ -198,17 +218,17 @@ end
 #Describe the environment
 class Environment < Game
   def initialize(party)
-    @party = party
+    $party = party
   end
   def town
-    @answer = userInput("Your party is currently in a town. Do you want them to leave?\nYes or No?==>").downcase
+    @answer = userInput("\nYour party is currently in a town. Do you want them to leave?\nYes or No?==>").downcase
     @answer == "yes" ? forest : town
   end
   def forest
-    @answer = userInput("Your party is standing at the entrance to a dark forest.\nDo they Enter, or Return to the town?==>").downcase
+    @answer = userInput("\nYour party is standing at the entrance to a dark forest.\nDo they Enter, or Return to the town?==>").downcase
     case @answer
       when "enter"
-        Encounter.new($saves[-1].party).hostileSingle
+        Encounter.new($party).hostileSingle
       when "return"
         town
       else
@@ -220,24 +240,24 @@ end
 class Encounter < Game
   def initialize(party)
      @enemy = Monster.new
-     @party = party
+     $party = party
   end
   def hostileSingle
-    puts "Your party is attacked by an angry #{@enemy.type}!!" # a(n) depending on vowel
+    puts "\nYour party is attacked by an angry #{@enemy.type}!!" # a(n) depending on vowel
     puts ""
     puts "The #{@enemy.type} has #{@enemy.stats[:hp]} HP.\n".center(60)
-    @party.each{|member| puts "#{member.name} has #{member.hp} HP.".center(60)}
+    $party.each{|member| puts "#{member.name} has #{member.hp} HP.".center(60)}
     userInput("")
-   #COULD THIS BE USEFUL? @party.each {|member| instance_variable_set("@player#{@party.index(member)+1}", member)}
+    $party.each {|member| instance_variable_set("@player#{$party.index(member)+1}", member)} #CHANGE THIS
     
 
     until @player1.hp < 1 || @enemy.stats[:hp] < 1 # initiative roll
-      for i in 0..(@party.length-1)
-        @party[i].actions(@enemy)
+      for i in 0..($party.length-1)
+        $party[i].actions(@enemy)
         break if @enemy.stats[:hp] < 1
       end
       break if @player1.hp < 1 || @enemy.stats[:hp] < 1
-      @enemy.attack(@party[rand(@party.length)])
+      @enemy.attack($party[rand($party.length)])
     end
 
     if (@player1.hp < 1)
@@ -271,10 +291,7 @@ class Monster < Game
     end
 end
 
-
-print "What would you like to call your new saved game?\n==> "
-$saves << Game.new(gets.chomp + ".dnd")
-$saves[-1].begin #rather than accessing by last index, could use .find to select the object with the chosen saveName
+Game.new.begin
 
 
 
