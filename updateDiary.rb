@@ -23,13 +23,11 @@ Tuesday 26/04/16
 		Users may now save and load parties to/from the 'savedChars' sub-directory
 ------------------
 Wednesday 27/04/16
-		Some general clean-up of code
+		some general clean-up of code
 		races, fightClasses, monsterManual are now stored in external JSON files
-
-
-
-
-
+		created monsterMaker as a tool for manually inputting new monsters to the monsterManual using the terminal
+		former Rules class is now an external file. its methods are accessed using 'require'
+		
 
 GOALS:
 		Determine combat turn order by an initiative roll
