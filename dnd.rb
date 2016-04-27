@@ -47,27 +47,31 @@ class Rules
     #Is called any time the game requires user input - this allows for universal commands such as 'quit', 'save' and 'status'
   def userInput(text="==> ") #redo this so that there are cases for "y, yes" and "n, no" that return true and false
     print text
-    input = gets.chomp
+    input = gets.chomp.downcase
     unless input == ""
       input = input.downcase.tr('-',' ').split(' ').map(&:capitalize).join
       input[0] = input[0].downcase
     end
     case input
-      when "quit"
-        print "Are you sure you want to quit?\n==> "
-          quitConfirm = gets.chomp.downcase
-          return userInput("You have not quit the game :)") unless (quitConfirm == "y" || quitConfirm == "yes" || quitConfirm == "quit")   
-          abort("You have quit the game :(") 
-      when "status" #allow going instantly to a char's status by typing "status charName"
-        puts "Whose status would you like to check?"
-        $party.each{|x| puts x.name}
-        choice = userInput.downcase.capitalize
-        $party.find {|player| player.name == choice}.status
-        userInput(text)
-      when "saveData"
-        puts "The current save file is: #{$saves}"
-        userInput
-      else
+    when "y", "yes"
+      true
+    when "n", "no"
+      false
+    when "quit"
+      print "Are you sure you want to quit?\n==> "
+      quitConfirm = gets.chomp.downcase
+      return userInput("You have not quit the game :)") unless (quitConfirm == "y" || quitConfirm == "yes" || quitConfirm == "quit")   
+      abort("You have quit the game :(") 
+    when "status" #allow going instantly to a char's status by typing "status charName"
+      puts "Whose status would you like to check?"
+      $party.each{|x| puts x.name}
+      choice = userInput.downcase.capitalize
+      $party.find {|player| player.name == choice}.status
+      userInput(text)
+    when "saveData"
+      puts "The current save file is: #{$saves}"
+      userInput
+    else
         input
     end
   end
@@ -84,19 +88,19 @@ class Game < Rules
   end
   #The player chooses whether to import a new party, or create a new one
   def partyImporter
-    partyImport = userInput("Hail adventurer! Would you like to import a party?\n==>").downcase
-    if %w(yes y).include?(partyImport)
+    partyImport = userInput("Hail adventurer! Would you like to import a party?\n==>")
+    if partyImport == true
       puts "What is the name of the saved party you wish to import?\nAvailable saves:"
-      Dir.entries("savedChars").reject {|f| File.directory? f}.reverse.each {|x| puts x[0...-3]} #Put "No saved games" if none
+      Dir.entries("savedChars").reject {|f| File.directory? f}.reverse.each {|x| puts x} #Put "No saved games" if none
       chosenSave = userInput
-      savedChar = "savedChars/" + chosenSave + ".rb"
+      savedChar = "savedChars/" + chosenSave# + ".rb"
       $party = YAML.load(File.read(savedChar))
       userInput("You have loaded saved party: #{chosenSave}")
-    elsif %w(no n).include?(partyImport)
+    elsif partyImport == false
       saveName = userInput("What would you like to call your new party?\n==>")
       #give party 'saveName' as a party name attribute 
       (userInput("How many will be in your party?\n==>").to_i).times {|x| createPlayer(x+1); $party[x].greeting } until $party.length >0 #confusingly worded, change the 'until' part
-      fileName = "savedChars/" + saveName + ".rb"
+      fileName = "savedChars/" + saveName# + ".rb"
       File.new(fileName, 'w+')
       File.open(fileName, 'w') {|f| f.write(YAML.dump($party)) }
     else partyImporter
@@ -221,15 +225,14 @@ class Environment < Game
     $party = party
   end
   def town
-    @answer = userInput("\nYour party is currently in a town. Do you want them to leave?\nYes or No?==>").downcase
-    @answer == "yes" ? forest : town
+    userInput("\nYour party is currently in a town. Do you want them to leave?\nYes or No?==>") == true ? forest : town
   end
   def forest
-    @answer = userInput("\nYour party is standing at the entrance to a dark forest.\nDo they Enter, or Return to the town?==>").downcase
+    @answer = userInput("\nYour party is standing at the entrance to a dark forest.\nDo they 1)Enter, or 2)Return to the town?==>")
     case @answer
-      when "enter"
+      when "enter", "e", "1"
         Encounter.new($party).hostileSingle
-      when "return"
+      when "return", "r", "2"
         town
       else
         forest
