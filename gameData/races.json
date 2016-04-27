@@ -1,0 +1,57 @@
+{
+  "human": {
+    "name": "Human",
+    "adj": "Human",
+    "lang": "Common"
+  },
+  "gnome": {
+    "name": "Gnome",
+    "adj": "Gnomish",
+    "lang": "Common"
+  },
+  "goliath": {
+    "name": "Goliath",
+    "adj": "Goliath",
+    "lang": "Common"
+  },
+  "halfElf": {
+    "name": "Half-Elf",
+    "adj": "Half-Elven",
+    "lang": "Common"
+  },
+  "elf": {
+    "name": "Elf",
+    "adj": "Elven",
+    "lang": "Common"
+  },
+  "dragonborn": {
+    "name": "Dragonborn",
+    "adj": "Dragonborn",
+    "lang": "Common"
+  },
+  "tiefling": {
+    "name": "Tiefling",
+    "adj": "Tiefling",
+    "lang": "Common"
+  },
+  "orc": {
+    "name": "Orc",
+    "adj": "Orcish",
+    "lang": "Common"
+  },
+  "halfling": {
+    "name": "Halfling",
+    "adj": "Halfling",
+    "lang": "Common"
+  },
+  "dwarf": {
+    "name": "Dwarf",
+    "adj": "Dwarven",
+    "lang": "Common"
+  },
+  "urchin": {
+    "name": "Urchin",
+    "adj": "Urchin",
+    "lang": "Common"
+  }
+}

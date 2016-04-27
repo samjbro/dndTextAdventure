@@ -1,0 +1,34 @@
+{
+  "Orc": {
+    "hp": 46,
+    "attacks": {
+      "Sword Thrust": 5,
+      "Charge": 7
+    },
+    "loot": "Battered Gauntlets"
+  },
+  "Goblin": {
+    "hp": 23,
+    "attacks": {
+      "Lunge": 5,
+      "Stab Stab Stab": 7
+    },
+    "loot": "Soggy Hat"
+  },
+  "Troll": {
+    "hp": 60,
+    "attacks": {
+      "Smash": 5,
+      "Belch": 7
+    },
+    "loot": "Troll Dick"
+  },
+  "Dragon": {
+    "hp": 999,
+    "attacks": {
+      "Fire Breath": 90,
+      "Tail Swipe": 65
+    },
+    "loot": "All The Treasure"
+  }
+}

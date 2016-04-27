@@ -1,0 +1,38 @@
+{
+  "cleric": {
+    "name": "Cleric"
+  },
+  "barbarian": {
+    "name": "Barbarian"
+  },
+  "rogue": {
+    "name": "Rogue"
+  },
+  "sorcerer": {
+    "name": "Sorcerer"
+  },
+  "bard": {
+    "name": "Bard"
+  },
+  "ranger": {
+    "name": "Ranger"
+  },
+  "gunslinger": {
+    "name": "Gunslinger"
+  },
+  "druid": {
+    "name": "Druid"
+  },
+  "thief": {
+    "name": "Thief"
+  },
+  "paladin": {
+    "name": "Paladin"
+  },
+  "fighter": {
+    "name": "Fighter"
+  },
+  "beggar": {
+    "name": "Weakling"
+  }
+}
