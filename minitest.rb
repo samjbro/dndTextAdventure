@@ -1,2 +1,5 @@
-newFile = File.new(fileName, 'w+')
-      File.open(fileName, 'w') {|f| f.write(YAML.dump($party)) }
+thing = Hash.new
+p thing
+
+thing["loc"] = 2
+p thing
