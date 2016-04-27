@@ -1,84 +1,26 @@
+#using YAML for party saves, and JSON for game data - probably better to use one or the other?
 require 'yaml'
-#Array of saved game
-
-#Array of saved game files
-
+require 'rubygems'
+require 'json'
+require 'ostruct'
+require_relative 'rules.rb' #userInput and dice rolls are loaded from here
+#Party array not necessary here, but mentioned as a reminder of its scope
 $party = Array.new
+
 #Selection of monsters
-$monsterManual = {:Orc => {:hp=>46, :attacks=>{:"Sword Thrust"=>5, :"Charge"=>7}, :loot=> "Battered Gauntlets"}, 
-                  :Goblin => {:hp=>23, :attacks=>{:Lunge=>5, :"Stab Stab Stab"=>7}, :loot=> "Soggy Hat"}, 
-                  :Troll => {:hp=>60, :attacks=>{:Smash=>5, :Belch=>7}, :loot=> "Troll Dick"}, 
-                  :Dragon => {:hp=>999, :attacks=>{:"Fire Breath"=>90, :"Tail Swipe"=>65}, :loot=> "All The Treasure"}}
+$monsterManual = File.read("gameData/monsterManual.json")
+$monsterManual = JSON.parse($monsterManual, :symbolize_names => true)
+
 #Selection of playable fighting classes
-$fightClasses = {:cleric => {:name => "Cleric"},
-                 :barbarian => {:name => "Barbarian"},
-                 :rogue => {:name => "Rogue"},
-                 :sorcerer => {:name => "Sorcerer"},
-                 :bard => {:name => "Bard"},
-                 :ranger => {:name => "Ranger"},
-                 :gunslinger => {:name => "Gunslinger"},
-                 :druid => {:name => "Druid"},
-                 :thief => {:name => "Thief"},
-                 :paladin => {:name => "Paladin"},
-                 :fighter => {:name => "Fighter"},
-                 :beggar => {:name => "Weakling"}}
+$fightClasses = File.read("gameData/fightClasses.json")
+$fightClasses = JSON.parse($fightClasses, :symbolize_names => true)
+
 #Selection of playable races
-$races        = {:human => {:name => "Human", :adj => "Human", :lang => "Common"},
-                 :gnome => {:name => "Gnome", :adj => "Gnomish", :lang => "Common"},
-                 :goliath => {:name => "Goliath", :adj => "Goliath", :lang => "Common"},
-                 :halfElf => {:name => "Half-Elf", :adj => "Half-Elven", :lang => "Common"},
-                 :elf => {:name => "Elf", :adj => "Elven", :lang => "Common"},
-                 :dragonborn => {:name => "Dragonborn", :adj => "Dragonborn", :lang => "Common"},
-                 :tiefling => {:name => "Tiefling", :adj => "Tiefling", :lang => "Common"},
-                 :orc => {:name => "Orc", :adj => "Orcish", :lang => "Common"},
-                 :halfling => {:name => "Halfling", :adj => "Halfling", :lang => "Common"},
-                 :dwarf => {:name => "Dwarf", :adj => "Dwarven", :lang => "Common"},
-                 :urchin => {:name => "Urchin", :adj => "Urchin", :lang => "Common"}}
-#Define the game's Rules
-class Rules
-#create the dice roll method
-  def d(sides, rolls)
-    damage = 0
-    rolls.times do |i|
-      damage += (rand(sides)+1)
-    end
-    damage
-  end
-    #Is called any time the game requires user input - this allows for universal commands such as 'quit', 'save' and 'status'
-  def userInput(text="==> ") #redo this so that there are cases for "y, yes" and "n, no" that return true and false
-    print text
-    input = gets.chomp.downcase
-    unless input == ""
-      input = input.downcase.tr('-',' ').split(' ').map(&:capitalize).join
-      input[0] = input[0].downcase
-    end
-    case input
-    when "y", "yes"
-      true
-    when "n", "no"
-      false
-    when "quit"
-      print "Are you sure you want to quit?\n==> "
-      quitConfirm = gets.chomp.downcase
-      return userInput("You have not quit the game :)") unless (quitConfirm == "y" || quitConfirm == "yes" || quitConfirm == "quit")   
-      abort("You have quit the game :(") 
-    when "status" #allow going instantly to a char's status by typing "status charName"
-      puts "Whose status would you like to check?"
-      $party.each{|x| puts x.name}
-      choice = userInput.downcase.capitalize
-      $party.find {|player| player.name == choice}.status
-      userInput(text)
-    when "saveData"
-      puts "The current save file is: #{$saves}"
-      userInput
-    else
-        input
-    end
-  end
-end
+$races = File.read("gameData/races.json")
+$races = JSON.parse($races, :symbolize_names => true)
 
 #Create a new Game
-class Game < Rules
+class Game
   def initialize
   end
   #Begins the game
@@ -101,8 +43,7 @@ class Game < Rules
       #give party 'saveName' as a party name attribute 
       (userInput("How many will be in your party?\n==>").to_i).times {|x| createPlayer(x+1); $party[x].greeting } until $party.length >0 #confusingly worded, change the 'until' part
       fileName = "savedChars/" + saveName# + ".rb"
-      File.new(fileName, 'w+')
-      File.open(fileName, 'w') {|f| f.write(YAML.dump($party)) }
+      File.open(fileName, 'w+') {|f| f.write(YAML.dump($party)) }
     else partyImporter
     end
   end
@@ -177,8 +118,7 @@ class Player < Game
 #Give the Player a selection of actions
   def actions(enemy)
      #maybe instead of this, look at all the defined action method names and list them?
-
-    userMethod = userInput("What will #{@name} do? They may: \n#{@actions.each{|x| puts x.capitalize}}\n==>").downcase #how do i center all of these, not just the first?
+    userMethod = userInput("What will #{@name} do? They may:\n#{@actions.map(&:capitalize).join("\n")}\n==>").downcase #how do i center all of these, not just the first?
     (@actions.include? userMethod) ? method(userMethod).call(enemy) : (puts "#{@name} attempts to #{userMethod}... Nothing happens.") 
   end
 #Describe the Player's 'attack' action

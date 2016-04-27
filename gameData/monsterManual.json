@@ -30,5 +30,13 @@
       "Tail Swipe": 65
     },
     "loot": "All The Treasure"
+  },
+  "Ghost": {
+    "hp": 43,
+    "attacks": {
+      "Phantasmalswipe": 20,
+      "Possess": 49
+    },
+    "loot": "Ectoplasmicdischarge"
   }
 }
