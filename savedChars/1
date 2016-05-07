@@ -1,0 +1,27 @@
+---
+- !ruby/object:Player
+  name: Sammish
+  playerNo: 1
+  race:
+    :name: Dwarf
+    :adj: Dwarven
+    :lang: Common
+    :num: 10
+  fightClass:
+    :name: Ranger
+  level: 1
+  hp: 66
+  actions:
+  - Attack
+  - Flee
+  - Check Inventory
+  - Suicide
+  inventory:
+  - Basic Potion
+  - Basic Rations
+  attacks:
+    :thrust:
+      :d8: 5
+      :d10: 1
+    :swipe:
+      :d1: 66

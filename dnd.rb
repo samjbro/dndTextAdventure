@@ -30,20 +30,11 @@ class Game
   end
   #The player chooses whether to import a new party, or create a new one
   def partyImporter
-    partyImport = userInput("Hail adventurer! Would you like to import a party?\n==>")
-    if partyImport == true
-      puts "What is the name of the saved party you wish to import?\nAvailable saves:"
-      Dir.entries("savedChars").reject {|f| File.directory? f}.reverse.each {|x| puts x} #Put "No saved games" if none
-      chosenSave = userInput
-      savedChar = "savedChars/" + chosenSave# + ".rb"
-      $party = YAML.load(File.read(savedChar))
-      userInput("You have loaded saved party: #{chosenSave}")
-    elsif partyImport == false
-      saveName = userInput("What would you like to call your new party?\n==>")
-      #give party 'saveName' as a party name attribute 
-      (userInput("How many will be in your party?\n==>").to_i).times {|x| createPlayer(x+1); $party[x].greeting } until $party.length >0 #confusingly worded, change the 'until' part
-      fileName = "savedChars/" + saveName# + ".rb"
-      File.open(fileName, 'w+') {|f| f.write(YAML.dump($party)) }
+    confirm = userInput("Hail adventurer! Would you like to import a party?\n==>")
+    if confirm == true #consider making these separate methods
+      importParty
+    elsif confirm == false
+      createParty
     else partyImporter
     end
   end
@@ -58,8 +49,14 @@ class Game
       print "#{index+1}) #{race[:name].ljust(12)}"
     end
     puts "\n"
-    playerRace = $races[userInput.to_sym]
-    playerRace = $races[:urchin] if playerRace == nil
+    selection = userInput
+    if selection.to_i.to_s == selection
+      raceIndex = selection.to_i - 1
+      playerRace = $races.values[raceIndex]
+    else  
+      playerRace = $races[userInput.to_sym]
+      playerRace = $races[:urchin] if playerRace == nil
+    end
 
     puts "And your class? Available classes are as follows:"
     $fightClasses.values.take($fightClasses.values.length-1).each_with_index do |fightClass, index| 
@@ -67,9 +64,14 @@ class Game
       print "#{index+1}) #{fightClass[:name].ljust(12)}" #index+1) is not included in ljust, so double digits formatting is wrong
     end
     puts "\n"    
-    fightClass = $fightClasses[userInput.downcase.to_sym]
-    fightClass = $fightClasses[:beggar] if fightClass == nil
-
+    selection = userInput
+    if selection.to_i.to_s == selection
+      classIndex = selection.to_i - 1
+      fightClass = $fightClasses.values[classIndex]
+    else  
+      fightClass = $fightClasses[userInput.downcase.to_sym]
+      fightClass = $fightClasses[:beggar] if fightClass == nil
+    end
     $party.push(Player.new(playerName, playerRace, fightClass, $party.length+1))
   end
 end
@@ -93,7 +95,7 @@ class Player < Game
     @fightClass = fightClass
     @level = 1
     @hp = 60 + d(20, 1)
-    @actions = ["attack", "flee", "inventory", "suicide"]
+    @actions = ["attack", "flee", "check Inventory", "suicide"]
     @inventory = ["Basic Potion", "Basic Rations"]
     @attacks = {:thrust=> {:d8=>5, :d10=>1}, :swipe=> {:d1=>66}}
   end
@@ -117,9 +119,20 @@ class Player < Game
   end
 #Give the Player a selection of actions
   def actions(enemy)
+    puts "What will #{@name} do? They may:"
+    @actions.each_with_index{|a, i| puts "#{i+1}) #{a}"}
      #maybe instead of this, look at all the defined action method names and list them?
-    userMethod = userInput("What will #{@name} do? They may:\n#{@actions.map(&:capitalize).join("\n")}\n==>").downcase #how do i center all of these, not just the first?
-    (@actions.include? userMethod) ? method(userMethod).call(enemy) : (puts "#{@name} attempts to #{userMethod}... Nothing happens.") 
+    userMethod = userInput #how do i center all of these, not just the first?
+    if userMethod.to_i.to_s == userMethod
+      unCamel = @actions[userMethod.to_i-1]
+      userMethod = unCamel
+      userMethod[0] = userMethod[0].downcase
+    else
+      unCamel = userMethod.split(/(?=[A-Z])/).join
+      p userMethod
+      p unCamel
+    end
+    (@actions.include? unCamel) ? method(userMethod).call(enemy) : (puts "#{@name} attempts to #{userMethod}... Nothing happens.") 
   end
 #Describe the Player's 'attack' action
   def attack(enemy)
@@ -147,7 +160,8 @@ class Player < Game
   def flee(enemy)
     puts "CHEEP CHEEP CHEEP CHEEP CHEEP"
   end
-  def inventoryCheck(enemy)
+  def checkInventory(enemy)
+    puts "You currently have the following items in your inventory:"
     puts @inventory
   end
 #Suicide results in a self-inflicted Game Over

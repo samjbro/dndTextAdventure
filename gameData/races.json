@@ -2,56 +2,67 @@
   "human": {
     "name": "Human",
     "adj": "Human",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 1
   },
   "gnome": {
     "name": "Gnome",
     "adj": "Gnomish",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 2
   },
   "goliath": {
     "name": "Goliath",
     "adj": "Goliath",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 3
   },
   "halfElf": {
     "name": "Half-Elf",
     "adj": "Half-Elven",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 4
   },
   "elf": {
     "name": "Elf",
     "adj": "Elven",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 5
   },
   "dragonborn": {
     "name": "Dragonborn",
     "adj": "Dragonborn",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 6
   },
   "tiefling": {
     "name": "Tiefling",
     "adj": "Tiefling",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 7
   },
   "orc": {
     "name": "Orc",
     "adj": "Orcish",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 8
   },
   "halfling": {
     "name": "Halfling",
     "adj": "Halfling",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 9
   },
   "dwarf": {
     "name": "Dwarf",
     "adj": "Dwarven",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 10
   },
   "urchin": {
     "name": "Urchin",
     "adj": "Urchin",
-    "lang": "Common"
+    "lang": "Common",
+    "num": 11
   }
 }
