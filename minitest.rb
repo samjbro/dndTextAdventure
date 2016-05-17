@@ -6,14 +6,15 @@ def createMap(rows,cols)
 	map.each_with_index do |row, y|
 		
 		row.each_with_index do |tile, x|
-			p tile
-			row[x]= x, cols - 1 - y
+			row[x]= x, cols-1-y
 		end
 	end
 	map.each {|x| print x; puts ""}
 end
-
-createMap(3,3)
-createMap(9,10)
+puts "How wide is your map?"
+width = gets.chomp.to_i
+puts "How long is your map?"
+length = gets.chomp.to_i
+createMap(width,length)
 
 
