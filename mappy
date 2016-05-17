@@ -1,0 +1,23 @@
+--- !ruby/object:Map
+tiles: 15
+layout:
+- - &1 !ruby/object:Tile
+    type: field
+  - *1
+  - *1
+- - &2 !ruby/object:Tile
+    type: field
+  - *2
+  - *2
+- - &3 !ruby/object:Tile
+    type: field
+  - *3
+  - *3
+- - &4 !ruby/object:Tile
+    type: field
+  - *4
+  - *4
+- - &5 !ruby/object:Tile
+    type: field
+  - *5
+  - *5

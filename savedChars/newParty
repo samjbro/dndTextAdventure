@@ -1,51 +1,47 @@
 ---
 - !ruby/object:Player
-  name: Sam
+  name: Jfjr
   playerNo: 1
   race:
     :name: Half-Elf
     :adj: Half-Elven
     :lang: Common
+    :num: 4
   fightClass:
-    :name: Rogue
+    :name: Ranger
   level: 1
-  hp: 61
+  hp: 65
   actions:
   - attack
   - flee
-  - inventory
+  - checkInventory
   - suicide
   inventory:
   - Basic Potion
   - Basic Rations
   attacks:
-    :thrust:
-      :d8: 5
-      :d10: 1
-    :swipe:
-      :d1: 66
+  - thrust
+  - swipe
 - !ruby/object:Player
-  name: Terry
+  name: Ogi
   playerNo: 2
   race:
-    :name: Tiefling
-    :adj: Tiefling
+    :name: Orc
+    :adj: Orcish
     :lang: Common
+    :num: 8
   fightClass:
-    :name: Gunslinger
+    :name: Barbarian
   level: 1
-  hp: 73
+  hp: 71
   actions:
   - attack
   - flee
-  - inventory
+  - checkInventory
   - suicide
   inventory:
   - Basic Potion
   - Basic Rations
   attacks:
-    :thrust:
-      :d8: 5
-      :d10: 1
-    :swipe:
-      :d1: 66
+  - thrust
+  - swipe

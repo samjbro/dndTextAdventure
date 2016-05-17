@@ -1,9 +1,19 @@
+require 'yaml'
 require 'json'
-$races = File.read("gameData/races.json")
-$races = JSON.parse($races, :symbolize_names => true)
-p $races.values[0]
-thing = $races.values_at($races[1])
-p thing
-selection = 5
- playerRace = $races.select{|race, key| key[:num] == selection}
- p playerRace
+
+def createMap(rows,cols)
+	map = Array.new(rows){Array.new(cols)}
+	map.each_with_index do |row, y|
+		
+		row.each_with_index do |tile, x|
+			p tile
+			row[x]= x, cols - 1 - y
+		end
+	end
+	map.each {|x| print x; puts ""}
+end
+
+createMap(3,3)
+createMap(9,10)
+
+
