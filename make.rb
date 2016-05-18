@@ -38,7 +38,10 @@ end
 def e()
    $global_pos += 1
    print $global_pos
-   if $global_pos > 0 && $global_pos < 5
+   if (($global_pos - 1) % 4) == 0
+   print "You can't go that way" + "\n"
+   $global_pos -= 1
+   elsif $global_pos > 0 && $global_pos < 5
    print "You are in a " + $my_map[$global_pos]["env"] + "\n"
    else
    print "You can't go that way" + "\n"
@@ -49,7 +52,10 @@ end
 def w()
    $global_pos -= 1
    print $global_pos
-   if $global_pos > 0
+   if (($global_pos + 1) % 5) == 0
+   print "You can't go that way" + "\n"
+   $global_pos += 1
+   elsif $global_pos > 0
    print "You are in a " + $my_map[$global_pos]["env"] + "\n"
    else
    print "You can't go that way" + "\n"
