@@ -2,6 +2,7 @@ require 'yaml'
 require 'json'
 
 
+
 def create_map(rows,cols)#why is one e
 	mappy = Hash.new
 	rows.times do |y|
