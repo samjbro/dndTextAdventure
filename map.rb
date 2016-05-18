@@ -5,10 +5,27 @@ obj = JSON.parse(json)
 
 $envs = ["field", "marsh", "forest"]
 
-def make_map()
-	$envs.sample
-	
+def tile_type()
+	$envs.sample	
 end
+
+def make_map(tile)
+    tile["env"]
+end
+
+arr = [1..16]
+h = arr.each_with_object({}) { |v,h| h[v] = f(v) }
+
+
+
+def make_grid()
+	$envs.sample	
+end
+
+locations = make_grid()
+
+
+
 
 # Another way of iterating over a hash - you can do each_value as well
 

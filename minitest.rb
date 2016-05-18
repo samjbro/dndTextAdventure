@@ -6,7 +6,7 @@ def createMap(rows,cols)
 	map.each_with_index do |row, y|
 		
 		row.each_with_index do |tile, x|
-			row[x]= x, cols-1-y
+			row[x]= x, rows-1-y
 		end
 	end
 	map.each {|x| print x; puts ""}
