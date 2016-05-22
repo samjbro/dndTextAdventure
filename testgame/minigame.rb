@@ -15,12 +15,6 @@ $creatures = JSON.parse($creatures)
 $items = File.read("minigameData/mini_items.json")
 $items = JSON.parse($items)
 
-class Game
-
-end
-
-
-
 $play = true
 
 $time = Time.new(1365, 03, 12, 8, 0)
