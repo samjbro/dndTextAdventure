@@ -33,6 +33,7 @@ class Game
   #Begins the game
   def begin
     Party.partyImporter
+    p $party
     Navigation.town
   end
 end

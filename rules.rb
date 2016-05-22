@@ -7,6 +7,9 @@ class String
   def unCamelize
     self.split(/(?=[A-Z])/).map(&:capitalize).join(' ').tr('  ', ' ')
   end
+  def underscoreize
+
+  end
 end
 
 module Rules

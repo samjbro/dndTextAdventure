@@ -1,15 +1,21 @@
 module Navigation
+  
   class Map
+    attr_accessor :tiles
+    attr_accessor :layout
     def initialize(x=3, y=3)
-      tiles = x*y
-      layout = Arr.new(x){ Array.new(y, Tile.new)}
+      @tiles = x*y
+      @layout = Array.new(x){ Array.new(y, Tile.new)}
     end
   end
-  class Tile
-    def initialize(type=field)
 
+  class Tile
+    attr_accessor :type
+    def initialize(type="field")
+      @type = type
     end
-  end
+    end
+
   def Navigation.town
     puts "Your party is currently in a town. Do you want them to leave?\n1)Yes or 2)No"
     input = Rules.userInput
