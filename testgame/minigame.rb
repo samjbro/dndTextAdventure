@@ -15,13 +15,13 @@ $creatures = JSON.parse($creatures)
 $items = File.read("minigameData/mini_items.json")
 $items = JSON.parse($items)
 
-$play = true
-
 $time = Time.new(1365, 03, 12, 8, 0)
 
-$new_player = Player.new([3,3], "Sampson")
+$new_player = Player.new([1,1], "Sampson")
 
 $current_map = "World"
+
+$ogre_dead = false
 
 $creatures.each do |k,v| 
 	$maps[$current_map]["@map_tiles"][v["location"]]["contents"]["creatures"] = [k]
@@ -32,8 +32,13 @@ $items.each do |k,v|
 	Map_Methods.save_if_hash($maps[$current_map])
 end
 
-$new_player.action until $play == false
+#Map_Methods.map_maker
 
+puts "You have started a new game!"
+Mini_Actions.look($new_player)
+$new_player.action until ($new_player.inventory.include?("#I001") && $ogre_dead)
+puts "You found the potion and slew the Ogre!"
+puts "You have won the game!!"
 
 
 #TARGET CO-ORDINATES

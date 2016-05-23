@@ -1,7 +1,7 @@
 module Mini_Actions
 	def Mini_Actions.use(player, item="whatever")
 		
-		puts "woooop"
+		puts "noooope"
 	end
 	def Mini_Actions.look(player, direction="around")
 		x_current = player.location[0]
@@ -24,7 +24,7 @@ module Mini_Actions
 			tile_chars = $maps[$current_map]["@map_tiles"][player.location]["contents"]["creatures"]
 			tile_items = $maps[$current_map]["@map_tiles"][player.location]["contents"]["items"]
 			
-			puts "You are standing in #{$maps[$current_map]["@map_tiles"][player.location]["terrain"]}"
+			puts "You are standing in a #{$maps[$current_map]["@map_tiles"][player.location]["terrain"]}."
 			($time.hour > 6 && $time.hour < 20) ? puts("It is day time.") : puts("It is night time.")
 			puts "In front of you there is a #{$creatures[tile_chars[0]]["data"]["type"]}." unless tile_chars.empty?
 			puts "There is a #{$items[tile_items[0]]["data"]["type"]} on the floor." unless tile_items.empty?
@@ -81,7 +81,9 @@ module Mini_Actions
 		when "time"
 			puts $time.strftime("It is currently %H:%M on day %d, month %m of the year %Y")
 		when "map"
-			Map_Methods.show_maps($maps[$current_map], player)
+			player.inventory.include?("#I002") ? Map_Methods.show_maps($maps[$current_map], player) : puts("You do not have a map.")
+		when "area", "surroundings"
+			Mini_Actions.look(player)
 		else
 			puts "What would you like to check?"
 			Mini_Actions.check(player, gets.chomp.downcase)
@@ -95,6 +97,7 @@ module Mini_Actions
 		if match
 			puts "You attack the #{$creatures[selection_id]["data"]["type"]}!"
 			puts "The #{$creatures[selection_id]["data"]["type"]} is dead!"
+			$ogre_dead = true
 			$maps[$current_map]["@map_tiles"][player.location]["contents"]["creatures"].delete(selection_id)
 		else
 			puts "There is no such creature in sight."

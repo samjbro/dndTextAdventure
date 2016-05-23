@@ -10,11 +10,12 @@ class Player
 		print "=>"
 		command = gets.chomp.downcase.split(' ',2)
 		case command[0] #Build synonym database
-		when "n","e","s","w"
+		when "n","e","s","w", "north", "east", "west", "south"
 			Mini_Actions.go(self, command[0])
 		when "quit", "q"
-			puts "You have quit the game."
-			$play = false
+			abort("You have quit the game.")
+		when "attack"
+			Mini_Actions.fight(self, command[1])
 		else
 			if @actions.include?(command[0])
 				Mini_Actions.public_send command[0], self, command[1]

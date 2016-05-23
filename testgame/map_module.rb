@@ -57,10 +57,15 @@ module Map_Methods
 			end 
 			print "\n|"
 			row.each do |tile| 
-				items = tile[1]["contents"]["items"]
-				item_array = []
-				items.each {|item| item_array << $items[item]["data"]["type"]}
-				print item_array.join(',').center(15) + "|"
+				if tile[1]["traversable"] == false
+					print ("X"*15).center(15)
+				else
+					items = tile[1]["contents"]["items"]
+					item_array = []
+					items.each {|item| item_array << $items[item]["data"]["type"]}
+					print item_array.join(',').center(15)
+				end
+				print  "|"
 			end 
 			puts ("\n" + "----------------" * map["@x_max"])
 		end
@@ -80,13 +85,13 @@ end
 class Map
 	attr_accessor :map_name, :x_max, :y_max, :map_tiles
 	def initialize(map_name, x_max, y_max, terrain, border)
-		@map_name = map_name
+		@map_name = map_name.downcase.capitalize
 		@x_max = x_max
 		@y_max = y_max
 		@map_tiles = Hash.new
 		y_max.times do |y|
 			x_max.times do |x|
-				@map_tiles[[x,y_max-1-y]] = {"terrain" => terrain.upcase, 
+				@map_tiles[[x,y_max-1-y]] = {"terrain" => terrain.capitalize, 
 											 "traversable" => true, 
 											 "contents" => {"items" => [], 
 											 			   "creatures" => []}}
@@ -95,7 +100,7 @@ class Map
 		self.border(border)
 	end
 	def border(border)
-		@map_tiles.each{|key, val| (val["terrain"]=border.upcase; val["traversable"] = false) if (key[0] % (@x_max-1) == 0) || (key[1] % (@y_max-1) == 0)}
+		@map_tiles.each{|key, val| (val["terrain"]=border.capitalize; val["traversable"] = false) if (key[0] % (@x_max-1) == 0) || (key[1] % (@y_max-1) == 0)}
 	end
 end
 class String
