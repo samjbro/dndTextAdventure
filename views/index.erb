@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>DnD Text Adventure</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <link rel="stylesheet" href="/styles.css">
+
+
+</head>
+
+<body>
+
+
+<% @@arr.each do |x| %>
+Name: <%= x %><br />
+<% end %>
+<p>Form</p>
+<form action="/" method="POST">
+	<input name="name" />
+	<input type="submit" value="Submit">
+</form>
+<%= @@arr %>
+
+<div class="red">asa</div>
+<div class="black">asas</div>
+
+
+  <script src="js/scripts.js"></script>
+</body>
+</html>

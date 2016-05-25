@@ -1,0 +1,59 @@
+body {
+    margin: 8px;
+}
+
+
+div{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+#container {
+
+	width: 420px;
+	height:400px;
+	display: inline-block;
+	border: solid 10px black;
+
+}
+.mountain{
+
+	background-color: red;
+	display: inline-block;
+    width:100px;
+    height:100px;
+
+}
+
+.field{
+
+	background-color: green;
+	display: inline-block;
+    width:100px;
+    height:100px;
+}
+
+.marsh{
+
+	background-color: yellow;
+		display: inline-block;
+    width:100px;
+    height:100px;
+}
+.road{
+
+	background-color: blue;
+	display: inline-block;
+    width:100px;
+    height:100px;
+}
+.forest{
+
+	background-color: brown;
+	display: inline-block;
+    width:100px;
+    height:100px;
+}
+.curr {
+	background-color: white
+}
