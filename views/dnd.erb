@@ -1,0 +1,40 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>DnD Text Adventure</title>
+
+  <link rel="stylesheet" href="/styles.css">
+
+
+</head>
+
+<body>
+
+<div id="container">
+<% @@my_map.each do |x, val| %>
+<% if val["curr_tile"] == true %>
+	<div class="<%= val["env"] %> curr"><%= val["env"] %> 
+
+<% else %>
+<div class="<%= val["env"]%>">
+
+<%= val["env"] %>
+
+<% end %>
+
+</div>
+
+
+<% end %>
+
+</div>
+<form>
+	<input type="submit" data-direction="1">East</input>
+</form>
+
+  <script src="js/scripts.js"></script>
+</body>
+</html>
